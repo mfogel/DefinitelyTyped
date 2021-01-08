@@ -285,13 +285,26 @@ export interface MessageText {
 }
 
 /**
+ * Options object for MailParser.
+ */
+export interface MailParserOptions extends StreamModule.TransformOptions {
+    formatDateString?: (date: Date) => string;
+    maxHtmlLengthToParse?: number;
+    skipHtmlToText?: boolean;
+    skipImageLinks?: boolean;
+    skipTextToHtml?: boolean;
+    skipTextLinks?: boolean;
+    Iconv?: any;
+}
+
+/**
  * A lower-level email parsing class.
  *
  * It is a transform stream that takes email source as bytestream for the input
  * and emits data objects for attachments and text contents.
  */
 export class MailParser extends StreamModule.Transform {
-    constructor(options?: StreamModule.TransformOptions);
+    constructor(options?: MailParserOptions);
     on(event: string, callback: (any: any) => void): this;
     on(event: 'headers', callback: (headers: Headers) => void): this;
     on(event: 'data' | 'readable', callback: (data: AttachmentStream | MessageText) => void): this;
@@ -305,7 +318,7 @@ export type Source = Buffer | Stream | string;
 /**
  * Options object for simpleParser.
  */
-export interface SimpleParserOptions extends StreamModule.TransformOptions {
+export interface SimpleParserOptions extends MailParserOptions {
     keepCidLinks?: boolean;
 }
 
